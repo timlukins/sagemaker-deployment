@@ -70,7 +70,7 @@ def predict_fn(input_data, model):
     #         data_X   - A sequence of length 500 which represents the converted review
     #         data_len - The length of the review
 
-    converted_review,len_review = convert_and_pad(word_dict, review_to_words(test_review), pad=500)
+    converted_review,len_review = convert_and_pad(model.word_dict, review_to_words(input_data), pad=500)
     data_X = converted_review
     data_len = len_review
 
@@ -88,7 +88,9 @@ def predict_fn(input_data, model):
     # TODO: Compute the result of applying the model to the input data. The variable `result` should
     #       be a numpy array which contains a single integer which is either 1 or 0
 
-    out = model(data)
-    result = np.round(out.numpy())
+    with torch.no_grad():
+        out = model(data)
+    
+    result = int(np.round(out.numpy())) # Have to cast to int
 
     return result
